@@ -3,6 +3,8 @@
 Provides a very simple functionality for creating diary entries, inspired by
 [vimwiki](https://github.com/vimwiki/vimwiki).
 
+Written in pure vimscript, python3 is only used by the [Denite](https://github.com/Shougo/denite.nvim) source.
+
 ## Usage
 
 ### Commands
