@@ -1,13 +1,5 @@
 " Copyright 2019 Michał Kaliński
 
-if !exists('g:mkdiary#root_dir')
-    let mkdiary#root_dir = $HOME . '/vim-diary'
-endif
-
-if !exists('g:mkdiary#entry_file_extension')
-    let mkdiary#entry_file_extension = 'txt'
-endif
-
 let s:ENTRY_PAT = '/%Y/%m/%d'
 
 
@@ -27,7 +19,7 @@ function mkdiary#open_today_entry_file(mods, count, edit_command) abort
 endfunction
 
 function s:make_entry_filename() abort
-    return g:mkdiary#root_dir .
+    return g:mkdiary_root_dir .
     \   strftime(s:ENTRY_PAT) .
-    \   '.' . g:mkdiary#entry_file_extension
+    \   '.' . g:mkdiary_entry_file_extension
 endfunction
