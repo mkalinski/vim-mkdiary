@@ -21,11 +21,19 @@ function mkdiary#open_today_entry_file(mods, count, edit_command) abort
 endfunction
 
 function s:make_entry_filename() abort
-    if !exists('g:mkdiary_root_dir') || strlen(g:mkdiary_root_dir) == 0
-        throw 'MkDiaryError: g:mkdiary_root_dir must exist and be non-empty'
+    if s:is_g_var_without_value('mkdiary_root_dir')
+        throw 'MkDiaryError: mkdiary_root_dir must exist and be non-empty'
     endif
 
     return g:mkdiary_root_dir .
     \   strftime(s:ENTRY_PAT) .
-    \   '.' . g:mkdiary_entry_file_extension
+    \   (
+    \       s:is_g_var_without_value('mkdiary_entry_file_extension') ?
+    \           '' :
+    \           '.' . g:mkdiary_entry_file_extension
+    \   )
+endfunction
+
+function s:is_g_var_without_value(varname) abort
+    return strlen(get(g:, a:varname, '')) == 0
 endfunction
