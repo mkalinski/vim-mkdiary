@@ -9,9 +9,7 @@ Written in pure vimscript, python3 is only used by the [Denite](https://github.c
 
 ### Commands
 
-```viml
-MkDiary
-```
+#### MkDiary
 
 Opens for editing a file with path `DIARY_DIR/Year/Month/Day.Ext`,
 where:
@@ -26,14 +24,18 @@ where:
 Before the file is opened, the whole directory path is create if it doesn't
 exist.
 
-```viml
-MkDiarySplit
-```
+The command accepts `!` and command modifiers in the same way as `:edit`.
+
+#### MkDiarySplit
 
 Works the same but opens the file in a new split buffer.
 
-Both commands react to bang and command modifiers in the same way as `edit` and
-`split`, respectively.
+The command accepts `!` and command modifiers in the same way as `:split`.
+
+#### MkDiaryYesterday / MkDiaryYesterdaySplit
+
+Work like `:MkDiary` / `:MkDiarySplit` respectively, but open the entry for the
+previous day instead of today.
 
 ### Denite source
 
