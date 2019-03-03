@@ -11,6 +11,7 @@ class Source(Base):
 
         self.name = 'mkdiary'
         self.kind = 'file'
+        self.sorters = ['sorter/word', 'sorter/rank']
 
     def gather_candidates(self, context):
         root = self.vim.vars['mkdiary_root_dir']
@@ -23,18 +24,23 @@ class Source(Base):
             return []
 
         ext = self.vim.vars['mkdiary_entry_file_extension']
+        year, month = self.__get_year_and_month_from_args(context)
 
         return [
             {
                 'word': self.__strip_root(path, root),
                 'action__path': path,
             }
-            for path in self.__iter_diary_entries(context, root, ext)
+            for path in self.__iter_diary_entries(year, month, root, ext)
         ]
 
     @staticmethod
-    def __iter_diary_entries(context, root_dir, extension):
-        year, month = (context['args'] + ['*', '*'])[:2]
+    def __get_year_and_month_from_args(context):
+        args = context['args'][:2]
+        return args + ['*'] * (2 - len(args))
+
+    @staticmethod
+    def __iter_diary_entries(year, month, root_dir, extension):
         return iglob('{root}/{year}/{month}/*{ext}'.format(
             root=root_dir,
             year=year,
