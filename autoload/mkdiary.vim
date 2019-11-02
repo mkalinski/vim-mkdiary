@@ -49,7 +49,7 @@ function s:prepare_entry_file(entry_filename) abort
 endfunction
 
 function s:open_entry_file(mods, count, edit_command, entry_filename) abort
-    call s:prepare_entry_file(entry_filename)
+    call s:prepare_entry_file(a:entry_filename)
     execute
     \   (empty(a:mods) ? '' : a:mods . ' ') .
     \   (a:count ? a:count : '') .
