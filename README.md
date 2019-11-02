@@ -57,7 +57,7 @@ let mkdiary_root_dir = $HOME . '/vim-diary'
 The root directory where all diary entries will be created.
 
 ```viml
-let mkdiary_entry_file_extensiob = 'txt'
+let mkdiary_entry_file_extension = 'txt'
 ```
 
 Extension that diary entry files will have.
