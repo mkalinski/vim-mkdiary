@@ -6,18 +6,14 @@ let s:DAY_LEN_IN_SECONDS = 24 * 60 * 60
 
 function mkdiary#open_today_entry_file(mods, count, edit_command) abort
     let entry_filename = s:make_entry_filename()
-    call s:prepare_entry_file(entry_filename)
     call s:open_entry_file(a:mods, a:count, a:edit_command, entry_filename)
-    call s:lcd_to_root()
 endfunction
 
 function mkdiary#open_yesterday_entry_file(mods, count, edit_command) abort
     let entry_filename = s:make_entry_filename({
     \   'timestamp': localtime() - s:DAY_LEN_IN_SECONDS,
     \})
-    call s:prepare_entry_file(entry_filename)
     call s:open_entry_file(a:mods, a:count, a:edit_command, entry_filename)
-    call s:lcd_to_root()
 endfunction
 
 function s:make_entry_filename(...) abort
@@ -53,11 +49,13 @@ function s:prepare_entry_file(entry_filename) abort
 endfunction
 
 function s:open_entry_file(mods, count, edit_command, entry_filename) abort
+    call s:prepare_entry_file(entry_filename)
     execute
     \   (empty(a:mods) ? '' : a:mods . ' ') .
     \   (a:count ? a:count : '') .
     \   a:edit_command
     \   a:entry_filename
+    call s:lcd_to_root()
 endfunction
 
 function s:ensure_root_set() abort
