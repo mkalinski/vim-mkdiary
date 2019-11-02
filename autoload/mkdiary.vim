@@ -8,6 +8,7 @@ function mkdiary#open_today_entry_file(mods, count, edit_command) abort
     let entry_filename = s:make_entry_filename()
     call s:prepare_entry_file(entry_filename)
     call s:open_entry_file(a:mods, a:count, a:edit_command, entry_filename)
+    call s:lcd_to_root()
 endfunction
 
 function mkdiary#open_yesterday_entry_file(mods, count, edit_command) abort
@@ -16,12 +17,11 @@ function mkdiary#open_yesterday_entry_file(mods, count, edit_command) abort
     \})
     call s:prepare_entry_file(entry_filename)
     call s:open_entry_file(a:mods, a:count, a:edit_command, entry_filename)
+    call s:lcd_to_root()
 endfunction
 
 function s:make_entry_filename(...) abort
-    if s:is_g_var_without_value('mkdiary_root_dir')
-        throw 'MkDiaryError: mkdiary_root_dir must exist and be non-empty'
-    endif
+    call s:ensure_root_set()
 
     let opts = a:0 > 0 ? a:1 : {}
 
@@ -58,4 +58,15 @@ function s:open_entry_file(mods, count, edit_command, entry_filename) abort
     \   (a:count ? a:count : '') .
     \   a:edit_command
     \   a:entry_filename
+endfunction
+
+function s:ensure_root_set() abort
+    if s:is_g_var_without_value('mkdiary_root_dir')
+        throw 'MkDiaryError: mkdiary_root_dir must exist and be non-empty'
+    endif
+endfunction
+
+function s:lcd_to_root() abort
+    call s:ensure_root_set()
+    execute 'lcd' g:mkdiary_root_dir
 endfunction
