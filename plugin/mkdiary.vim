@@ -17,13 +17,13 @@ endif
 
 
 command -bang MkDiary
-\   call mkdiary#open_today_entry_file('<mods>', 0, 'edit<bang>')
+\   call mkdiary#open_today_entry_file(<q-mods>, 'edit<bang>')
 
 command -bang MkDiaryYesterday
-\   call mkdiary#open_yesterday_entry_file('<mods>', 0, 'edit<bang>')
+\   call mkdiary#open_yesterday_entry_file(<q-mods>, 'edit<bang>')
 
-command -bang -count MkDiarySplit
-\   call mkdiary#open_today_entry_file('<mods>', <count>, 'split<bang>')
+command -bang MkDiarySplit
+\   call mkdiary#open_today_entry_file(<q-mods>, 'split<bang>')
 
-command -bang -count MkDiaryYesterdaySplit
-\   call mkdiary#open_yesterday_entry_file('<mods>', <count>, 'split<bang>')
+command -bang MkDiaryYesterdaySplit
+\   call mkdiary#open_yesterday_entry_file(<q-mods>, 'split<bang>')
