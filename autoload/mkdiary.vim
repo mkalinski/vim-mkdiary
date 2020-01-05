@@ -1,63 +1,89 @@
-" Copyright 2019 Michał Kaliński
+" Copyright 2019,2020 Michał Kaliński
 
 let s:ENTRY_PAT = '/%Y/%m/%d'
 let s:DAY_LEN_IN_SECONDS = 24 * 60 * 60
 
-
-function mkdiary#open_today_entry_file(mods, edit_command) abort
-    let entry_filename = s:make_entry_filename()
-    call s:open_entry_file(a:mods, a:edit_command, entry_filename)
+function mkdiary#edit(bang, mods, ...) abort
+    call s:open(
+    \   s:join_mods_and_command(a:mods, 'edit') . a:bang,
+    \   s:parse_options(a:000),
+    \)
 endfunction
 
-function mkdiary#open_yesterday_entry_file(mods, edit_command) abort
-    let entry_filename = s:make_entry_filename({
-    \   'timestamp': localtime() - s:DAY_LEN_IN_SECONDS,
-    \})
-    call s:open_entry_file(a:mods, a:edit_command, entry_filename)
+function mkdiary#split(mods, ...) abort
+    call s:open(
+    \   s:join_mods_and_command(a:mods, 'split'),
+    \   s:parse_options(a:000),
+    \)
 endfunction
 
-function s:make_entry_filename(...) abort
-    call s:ensure_root_set()
-    let opts = a:0 > 0 ? a:1 : {}
-    return g:mkdiary_root_dir . s:format_time(opts) . s:get_file_exension()
+function s:join_mods_and_command(mods, command) abort
+    return (!empty(a:mods) ? a:mods . ' ' : '') . a:command
 endfunction
 
-function s:is_g_var_without_value(varname) abort
-    return strlen(get(g:, a:varname, '')) == 0
+function s:parse_options(args) abort
+    if empty(a:args) || empty(a:args[0])
+        return {}
+    endif
+
+    if a:args[0] =~# '^[+-]\d\+'
+        return {'days_from_today': str2nr(a:args[0])}
+    endif
+
+    throw printf('MkDiaryError: Unknown arguments: %s', a:args)
+endfunction
+
+function s:open(command, options) abort
+    let root = s:get_root_dir()
+    let entry = s:get_entry(root, a:options)
+    call s:prepare_entry_dir(entry)
+    execute a:command entry
+    execute 'lcd' root
+endfunction
+
+function s:get_root_dir() abort
+    let root = get(g:, 'mkdiary_root_dir', '')
+
+    if empty(root)
+        throw 'MkDiaryError: `g:mkdiary_root_dir` is empty'
+    endif
+
+    return root
+endfunction
+
+function s:get_entry(root_dir, options) abort
+    if has_key(a:options, 'days_from_today')
+        return s:get_entry_for_days_from_today(
+        \   a:root_dir,
+        \   a:options.days_from_today,
+        \)
+    endif
+
+    return s:get_entry_for_today(a:root_dir)
+endfunction
+
+function s:get_entry_for_today(root_dir) abort
+    return s:get_entry_for_time(a:root_dir, localtime())
+endfunction
+
+function s:get_entry_for_days_from_today(root_dir, days_diff) abort
+    return s:get_entry_for_time(
+    \   a:root_dir,
+    \   localtime() + a:days_diff * s:DAY_LEN_IN_SECONDS,
+    \)
+endfunction
+
+function s:get_entry_for_time(root_dir, entry_time) abort
+    return a:root_dir
+    \   . strftime(s:ENTRY_PAT, a:entry_time)
+    \   . s:get_file_exension()
 endfunction
 
 function s:get_file_exension() abort
-    return s:is_g_var_without_value('mkdiary_entry_file_extension') ?
-    \   '' :
-    \   '.' . g:mkdiary_entry_file_extension
+    let ext = get(g:, 'mkdiary_entry_file_extension', '')
+    return !empty(ext) ? '.' . ext : ''
 endfunction
 
-function s:format_time(opts) abort
-    if has_key(a:opts, 'timestamp')
-        let timestamp = a:opts['timestamp']
-        return strftime(s:ENTRY_PAT, timestamp)
-    endif
-    return strftime(s:ENTRY_PAT)
-endfunction
-
-function s:prepare_entry_file(entry_filename) abort
-    let entry_dirname = fnamemodify(a:entry_filename, ':p:h')
-    call mkdir(entry_dirname, 'p')
-endfunction
-
-function s:open_entry_file(mods, edit_command, entry_filename) abort
-    call s:prepare_entry_file(a:entry_filename)
-    execute a:mods a:edit_command a:entry_filename
-    call s:lcd_to_root()
-endfunction
-
-function s:ensure_root_set() abort
-    if s:is_g_var_without_value('mkdiary_root_dir')
-        throw 'MkDiaryError: g:mkdiary_root_dir must exist and be non-empty'
-    endif
-endfunction
-
-function s:lcd_to_root() abort
-    call s:ensure_root_set()
-    execute 'lcd' g:mkdiary_root_dir
+function s:prepare_entry_dir(entry_filename) abort
+    call mkdir(fnamemodify(a:entry_filename, ':p:h'), 'p')
 endfunction

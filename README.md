@@ -9,7 +9,9 @@ Written in pure vimscript, python3 is only used by the [Denite](https://github.c
 
 ### Commands
 
-#### MkDiary
+```viml
+MkDiary[!] [(+|-)days]
+```
 
 Opens for editing a file with path `DIARY_DIR/Year/Month/Day.Ext`,
 where:
@@ -21,21 +23,20 @@ where:
 - `Day` is the current day of the month expressed with 2 digits, zero-padded.
 - `Ext` is the file extension configured by `mkdiary_entry_file_extension`.
 
-Before the file is opened, the whole directory path is create if it doesn't
+Before the file is opened, its whole directory path is create if it doesn't
 exist.
 
-The command accepts `!` and command modifiers in the same way as `:edit`.
+The value of `Day` can be modified by the value of the `days` argument, forward
+or backward in time depending on the sign. For example, `:MkDiary -1` opens the
+diary entry for yesterday.
 
-#### MkDiarySplit
+The command opens the buffer in the current window like `:edit[!]` does.
 
-Works the same but opens the file in a new split buffer.
+```viml
+MkDiarySplit [(+|-)days]
+```
 
-The command accepts `!` and command modifiers in the same way as `:split`.
-
-#### MkDiaryYesterday / MkDiaryYesterdaySplit
-
-Work like `:MkDiary` / `:MkDiarySplit` respectively, but open the entry for the
-previous day instead of today.
+Same as `MkDiary`, but opens the buffer like `:split`.
 
 ### Denite source
 
@@ -54,7 +55,8 @@ sub-directories for the given year and month.
 let mkdiary_root_dir = $HOME . '/vim-diary'
 ```
 
-The root directory where all diary entries will be created.
+The root directory where all diary entries will be created. Must be set and
+non-empty.
 
 ```viml
 let mkdiary_entry_file_extension = 'txt'
