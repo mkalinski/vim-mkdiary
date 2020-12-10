@@ -1,6 +1,7 @@
 # Copyright 2019 Michał Kaliński
 
 from glob import iglob
+from itertools import chain, islice, repeat
 
 from .base import Base
 
@@ -14,16 +15,8 @@ class Source(Base):
         self.sorters = ['sorter/word', 'sorter/rank']
 
     def gather_candidates(self, context):
-        root = self.vim.vars['mkdiary_root_dir']
-
-        if not root:
-            self.error_message(
-                context,
-                'mkdiary_root_dir must exist and be non-empty'
-            )
-            return []
-
-        ext = self.vim.vars['mkdiary_entry_file_extension']
+        root = self.vim.call('mkdiary#get_root_dir')
+        ext = self.vim.call('mkdiary#get_file_extension')
         year, month = self.__get_year_and_month_from_args(context)
 
         return [
@@ -36,8 +29,7 @@ class Source(Base):
 
     @staticmethod
     def __get_year_and_month_from_args(context):
-        args = context['args'][:2]
-        return args + ['*'] * (2 - len(args))
+        return islice(chain(context['args'], repeat('*')), 2)
 
     @staticmethod
     def __iter_diary_entries(year, month, root_dir, extension):

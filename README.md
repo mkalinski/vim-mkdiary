@@ -3,18 +3,21 @@
 Provides a very simple functionality for creating diary entries, inspired by
 [vimwiki](https://github.com/vimwiki/vimwiki).
 
-Written in pure vimscript, python3 is only used by the [Denite](https://github.com/Shougo/denite.nvim) source.
+Written in pure vimscript, python3 is only used for
+[Denite](https://github.com/Shougo/denite.nvim) source.
 
 ## Usage
 
 ### Commands
 
+This plugin defines two commands:
+
 ```viml
-MkDiary[!] [(+|-)days]
+:MkDiary[!] [(+|-){days} | [{year} [{month} [{day}]]]]
 ```
 
-Opens for editing a file with path `DIARY_DIR/Year/Month/Day.Ext`,
-where:
+Without arguments, opens (with `:edit[!]`) for editing a file with path
+`DIARY_DIR/Year/Month/Day.Ext`, where:
 
 - `DIARY_DIR` is the directory configured by `mkdiary_root_dir`.
 - `Year` is the current year expressed with 4 digits (`2018`, `2019`, etc.).
@@ -26,17 +29,29 @@ where:
 Before the file is opened, its whole directory path is create if it doesn't
 exist.
 
-The value of `Day` can be modified by the value of the `days` argument, forward
-or backward in time depending on the sign. For example, `:MkDiary -1` opens the
-diary entry for yesterday.
+If `(+|-){days}` argument is passed, where `days` is an integer, an entry for
+`{current day} (+|-) {days}` is opened instead.
 
-The command opens the buffer in the current window like `:edit[!]` does.
+If `{year} {month} {day}` arguments are passed, where all values are integers,
+the entry for that day is opened instead.
+
+If `{year}` or `{year} {month}` arguments are passed, where both values are
+integers, the directory `DIARY_DIR/Year` or `DIARY_DIR/Year/Month` are opened.
+If they don't exist, they're created. They're opened using `:edit[!]`, which
+normally invokes netrw, but this can be customized using
+`mkdiary_dir_explore_command`.
+
+The `!` is passed to the opening command.
 
 ```viml
-MkDiarySplit [(+|-)days]
+:MkDiarySplit[!] [(+|-){days} | [{year} [{month} [{day}]]]]
 ```
 
-Same as `MkDiary`, but opens the buffer like `:split`.
+Same as `MkDiary`, but opens the buffer like `:split`. When opening
+a directory, `mkdiary_dir_explore_command` is used.
+
+The `!` is passed to the opening command, and modifiers can be used to change
+where the new window is opened (like with `:split`).
 
 ### Denite source
 
@@ -52,14 +67,37 @@ sub-directories for the given year and month.
 ## Configuration
 
 ```viml
-let mkdiary_root_dir = $HOME . '/vim-diary'
+let g:mkdiary_root_dir = $HOME . '/vim-diary'
 ```
 
-The root directory where all diary entries will be created. Must be set and
-non-empty.
+The root directory where all diary entries will be created.
 
 ```viml
-let mkdiary_entry_file_extension = 'txt'
+let g:mkdiary_entry_file_extension = 'txt'
 ```
 
 Extension that diary entry files will have.
+
+```viml
+let g:mkdiary_dir_explore_command = 'edit'
+let g:mkdiary_dir_explore_split_command = 'split'
+```
+
+The commands to use to open directories. Their values can be either strings or
+funcrefs.
+
+If they're strings, they're taken to be the name of the command that's invoked
+like this:
+
+```viml
+{modifiers} {command}[!] {absolute directory path}
+```
+
+If they're funcrefs, they're called like this:
+
+```viml
+func({modifiers}, {bang}, {absolute directory path})
+```
+
+The commands / funcrefs should open the entry in the same / new window, and
+keep the cursor there by they time they exit.
