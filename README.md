@@ -67,20 +67,20 @@ sub-directories for the given year and month.
 ## Configuration
 
 ```viml
-let g:mkdiary_root_dir = $HOME . '/vim-diary'
+let g:MkDiary_root_dir = $HOME . '/vim-diary'
 ```
 
 The root directory where all diary entries will be created.
 
 ```viml
-let g:mkdiary_entry_file_extension = 'txt'
+let g:MkDiary_entry_file_extension = 'txt'
 ```
 
 Extension that diary entry files will have.
 
 ```viml
-let g:mkdiary_dir_explore_command = 'edit'
-let g:mkdiary_dir_explore_split_command = 'split'
+let g:MkDiary_dir_explore_command = 'edit'
+let g:MkDiary_dir_explore_split_command = 'split'
 ```
 
 The commands to use to open directories. Their values can be either strings or

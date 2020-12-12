@@ -24,19 +24,19 @@ function mkdiary#split(mods, bang, args) abort
 endfunction
 
 function mkdiary#get_root_dir() abort
-    return get(g:, 'mkdiary_root_dir', $HOME . '/vim-diary')
+    return get(g:, 'MkDiary_root_dir', $HOME . '/vim-diary')
 endfunction
 
 function mkdiary#get_file_extension() abort
-    return get(g:, 'mkdiary_entry_file_extension', 'txt')
+    return get(g:, 'MkDiary_entry_file_extension', 'txt')
 endfunction
 
 function mkdiary#get_explore_command() abort
-    return get(g:, 'mkdiary_dir_explore_command', 'edit')
+    return get(g:, 'MkDiary_dir_explore_command', 'edit')
 endfunction
 
 function mkdiary#get_explore_split_command() abort
-    return get(g:, 'mkdiary_dir_explore_split_command', 'split')
+    return get(g:, 'MkDiary_dir_explore_split_command', 'split')
 endfunction
 
 function mkdiary#lcd_root() abort
