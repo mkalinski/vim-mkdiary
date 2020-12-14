@@ -111,13 +111,13 @@ function s:open_entry(file_command, dir_command_get, mods, bang, entry) abort
     call mkdiary#lcd_root()
 endfunction
 
-function s:open_dir(dir_command_get, mods, bang, full_entry) abort
-    let l:explore = a:dir_command_get()
+function s:open_dir(Dir_command_get, mods, bang, full_entry) abort
+    let l:Explore = a:Dir_command_get()
 
-    if type(l:explore) == type('')
-        execute s:format_command(a:mods, l:explore, a:bang, a:full_entry)
+    if type(l:Explore) == type('')
+        execute s:format_command(a:mods, l:Explore, a:bang, a:full_entry)
     else
-        call l:explore(a:mods, a:bang, a:full_entry)
+        call l:Explore(a:mods, a:bang, a:full_entry)
     endif
 endfunction
 
