@@ -87,7 +87,7 @@ function s:parse_date_part_arg(date_part, args_string) abort
     let l:date_num = str2nr(a:date_part)
 
     if l:date_num > 0
-        return '/' . l:date_num
+        return printf('/%02d', l:date_num)
     endif
 
     throw s:error_command_args(a:args_string)
