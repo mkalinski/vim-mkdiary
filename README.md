@@ -6,6 +6,9 @@ Provides a very simple functionality for creating diary entries, inspired by
 Written in pure vimscript, python3 is only used for
 [Denite](https://github.com/Shougo/denite.nvim) source.
 
+**NOTE:** This plugin is no longer maintained,
+replaced by: https://github.com/mkalinski/neovim-MkDiary
+
 ## Usage
 
 ### Commands
